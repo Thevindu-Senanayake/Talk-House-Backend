@@ -28,10 +28,10 @@ const userSchema = new mongoose.Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
+      default: Date.now(),
     },
     contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    groups: [{ type: mongoose.Schema.Types.ObjectId, ref: "GroupChat" }],
+    groups: [{ type: mongoose.Schema.Types.ObjectId, ref: "Group" }],
   },
   {
     versionKey: false,

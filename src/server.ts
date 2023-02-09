@@ -2,18 +2,22 @@ import express, { Errback } from "express";
 import http from "http";
 import cors from "cors";
 import * as dotenv from "dotenv";
+
 import connectDatabase from "./config/datatbase";
 import app from "./app";
+import { createSocketServer } from "./socket/socket";
 
 dotenv.config({ path: __dirname + "\\config\\config.env" });
 
 app.use(express.json());
-app.use(cors());
 
 connectDatabase();
 
 // initializing a server manually
 const httpServer = http.createServer(app);
+
+// creating socket server
+createSocketServer(httpServer);
 
 // handle uncaught exceptions
 process.on("uncaughtException", (err) => {
@@ -42,6 +46,7 @@ server.on("error", (e: any) => {
 // handle unhandled promise rejection
 process.on("unhandledRejection", (err: any) => {
   console.log(`ERROR: ${err.message}`);
+  console.log(err);
   console.log(`shutting down the server due to unhandled promise rejection.`);
   server.close(() => {
     process.exit(1);

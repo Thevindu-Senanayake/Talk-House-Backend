@@ -1,14 +1,15 @@
-import { NextFunction, Response } from "express";
+import { NextFunction, Response, Request } from "express";
 import * as jwt from "jsonwebtoken";
 import User from "../model/User";
 import { UserModel, IUser, IRequest } from "../types/types";
 
 // Checks if user is authenticated or not
 export const isAuthenticatedUser = async (
-  req: IRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const request = req as IRequest;
   const { token } = req.cookies;
 
   if (!token) {
@@ -20,7 +21,7 @@ export const isAuthenticatedUser = async (
     token,
     process.env.JWT_SECRET as string
   ) as jwt.JwtPayload;
-  req.user = (await User.findById(decode.id as string)) as IUser;
+  request.user = (await User.findById(decode.id as string)) as IUser;
 
   next();
 };
