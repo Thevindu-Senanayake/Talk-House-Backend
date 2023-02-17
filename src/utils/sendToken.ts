@@ -1,7 +1,6 @@
 import { Response } from "express";
 import mongoose from "mongoose";
 import User from "../model/User";
-import { UserModel } from "../types/types";
 
 // Create and send token and save in the cookie
 const sendToken = async (

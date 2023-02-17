@@ -5,11 +5,20 @@ import { UserModel } from "../types/types";
 
 const userSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: [true, "Please enter your name."],
+      maxLength: [30, "Your name cannot be longer than 30 characters."],
+    },
     email: {
       type: String,
       unique: true,
-      required: [true, "Please enter your email."],
       maxLength: [40, "Your email cannot be longer than 40 characters."],
+      sparse: true,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
     },
     username: {
       type: String,
@@ -26,12 +35,13 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+    contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    groups: [{ type: mongoose.Schema.Types.ObjectId, ref: "Group" }],
+    updatedAt: { type: Date },
     createdAt: {
       type: Date,
       default: Date.now(),
     },
-    contacts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    groups: [{ type: mongoose.Schema.Types.ObjectId, ref: "Group" }],
   },
   {
     versionKey: false,

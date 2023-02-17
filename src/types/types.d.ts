@@ -2,20 +2,17 @@ import mongoose from "mongoose";
 import { Request } from "express";
 import { Socket } from "socket.io";
 
-interface Group {
+export interface UserModel extends mongoose.Document {
   _id: mongoose.Types.ObjectId;
   name: string;
-  participants: mongoose.Schema.Types.ObjectId[];
-  admin: mongoose.Schema.Types.ObjectId;
-}
-
-export interface UserModel extends mongoose.Document {
-  username: string;
   email: string;
+  verified: boolean;
+  username: string;
   password: string;
   role: string;
   contacts: mongoose.Schema.Types.ObjectId[];
-  groups: Group[];
+  groups: mongoose.Schema.Types.ObjectId[];
+  updatedAt: Date;
   createdAt: Date;
   comparePassword: (password: string) => Promise<boolean>;
   getJwt: () => string;
@@ -27,6 +24,16 @@ export interface ContactRequset extends mongoose.Document {
   createdAt: Date;
 }
 
+export interface Message extends mongoose.Document {
+  sender: {
+    id: mongoose.Schema.Types.ObjectId;
+    username: string;
+  };
+  reciever: mongoose.Schema.Types.ObjectId[];
+  text: string;
+  createdAt: Date;
+  updatedAt?: Date;
+}
 export interface IUser {
   _id: mongoose.Schema.Types.ObjectId;
   username: string;

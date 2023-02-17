@@ -1,9 +1,10 @@
 import { NextFunction, Response, Request } from "express";
 import * as jwt from "jsonwebtoken";
 import User from "../model/User";
-import { UserModel, IUser, IRequest } from "../types/types";
+import { IUser, IRequest } from "../types/types";
+import ErrorHandler from "../utils/errorHandler";
 
-// Checks if user is authenticated or not
+// Checks if user is authenticated
 export const isAuthenticatedUser = async (
   req: Request,
   res: Response,
@@ -13,8 +14,7 @@ export const isAuthenticatedUser = async (
   const { token } = req.cookies;
 
   if (!token) {
-    res.status(401).send("Login first to access this resource.");
-    //  return ("Login first to access this resource.", 401);
+    return next(new ErrorHandler("Login first to access this resource.", 401));
   }
 
   const decode = jwt.verify(
@@ -26,16 +26,32 @@ export const isAuthenticatedUser = async (
   next();
 };
 
+// Checks if user is authenticated
+export const isLoggedUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { token } = req.cookies;
+
+  if (token) {
+    return next(new ErrorHandler("You Have Already Logged in", 401));
+  }
+
+  next();
+};
+
 // Handle users roles
 export const authorizeRoles = (roles: string) => {
   return (req: IRequest, res: Response, next: NextFunction) => {
     const authRoles = roles.split(",");
     if (!authRoles.includes(req.user?.role as string)) {
-      res
-        .status(403)
-        .send(
-          `Role (${req.user?.role}) is not allowed to access this resource`
-        );
+      return next(
+        new ErrorHandler(
+          `Role (${req.user?.role}) is not allowed to access this resource`,
+          403
+        )
+      );
     }
     next();
   };
