@@ -7,27 +7,27 @@ import Message from "../model/Message";
 
 export const addMessage = catchAsyncErrors(
   async (req: IRequest, res: Response, next: NextFunction) => {
-    const { text, reciever: recieverId } = req.body;
+    const { text, receiver: receiverId } = req.body;
 
-    if (!recieverId) {
-      return next(new ErrorHandler("Reciever of the message is required", 400));
+    if (!receiverId) {
+      return next(new ErrorHandler("Receiver of the message is required", 400));
     }
 
     if (!text) {
       return next(new ErrorHandler("You cant send empty messages", 400));
     }
 
-    const receiver = await User.findById(recieverId);
+    const receiver = await User.findById(receiverId);
 
     if (!receiver) {
       return next(
-        new ErrorHandler("Reciever of the message is not found", 404)
+        new ErrorHandler("Receiver of the message is not found", 404)
       );
     }
 
     await Message.create({
       sender: { username: req.user.username, id: req.user._id },
-      reciever: recieverId,
+      receiver: receiverId,
     });
 
     res.send(200).json({ success: true });

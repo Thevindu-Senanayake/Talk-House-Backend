@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { ContactRequset } from "../types/types";
+import { ContactRequest } from "../types/types";
 
-const ContactRequsetSchema = new mongoose.Schema(
+const ContactRequestSchema = new mongoose.Schema(
   {
     // User sending the invitation
     senderId: {
@@ -24,7 +24,7 @@ const ContactRequsetSchema = new mongoose.Schema(
   { versionKey: false }
 );
 
-export default mongoose.model<ContactRequset>(
-  "ContactRequset",
-  ContactRequsetSchema
+export default mongoose.model<ContactRequest>(
+  "ContactRequest",
+  ContactRequestSchema
 );

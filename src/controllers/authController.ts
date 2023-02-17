@@ -17,7 +17,7 @@ export const register = catchAsyncErrors(
       return next(new ErrorHandler("Your Name is not specified", 400));
     }
     if (email) {
-      //  check if user is alredy registered with this email and if so return error message
+      //  check if user is already registered with this email and if so return error message
       const user = await User.findOne({ email: email });
 
       if (user?.verified) {
@@ -68,7 +68,7 @@ export const verifyRegistration = catchAsyncErrors(
     }
 
     if (!email) {
-      return next(new ErrorHandler("Can't retriew email from cookies", 500));
+      return next(new ErrorHandler("Can't retrieve email from cookies", 500));
     }
 
     const otp = await OTP.findOne({ email: email });
@@ -103,7 +103,7 @@ export const resendOTP = catchAsyncErrors(
     const { email } = req.cookies;
 
     if (!email) {
-      return next(new ErrorHandler("Can't retriew email from cookies", 500));
+      return next(new ErrorHandler("Can't retrieve email from cookies", 500));
     }
 
     // generate otp
@@ -112,7 +112,7 @@ export const resendOTP = catchAsyncErrors(
     // send confirmation email
     await sendConfirmationEmail(email, otp);
 
-    // check if otp is alredy present and if delete the current otp record
+    // check if otp is already present and if delete the current otp record
     await OTP.findOneAndDelete({ email: email });
 
     await OTP.create({ code: otp, email: email });
@@ -183,7 +183,7 @@ export const getContacts = catchAsyncErrors(
     const { contacts } = req.user;
 
     if (!contacts) {
-      return next(new ErrorHandler("You dont Have Any Contacts", 400));
+      return next(new ErrorHandler("You don't Have Any Contacts", 400));
     }
 
     const response: Array<{

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { IRequest } from "../types/types";
-import ContactRequset from "../model/ContactRequset";
+import ContactRequest from "../model/ContactRequest";
 import User from "../model/User";
 import ErrorHandler from "../utils/errorHandler";
 import catchAsyncErrors from "../middlewares/catchAsyncErrors";
@@ -32,12 +32,12 @@ export const requestContact = catchAsyncErrors(
     }
 
     // check if request has already been sent
-    const requsetAlreadyExists = await ContactRequset.findOne({
+    const requestAlreadyExists = await ContactRequest.findOne({
       senderId: senderId,
       receiverId: receiver._id,
     });
 
-    if (requsetAlreadyExists) {
+    if (requestAlreadyExists) {
       return next(
         new ErrorHandler(
           "You have already sent an invitation to this user",
@@ -76,7 +76,7 @@ export const requestContact = catchAsyncErrors(
     }
 
     // create invitation
-    await ContactRequset.create({
+    await ContactRequest.create({
       senderId: senderId,
       receiverId: receiver._id,
     });
@@ -89,7 +89,7 @@ export const requestContact = catchAsyncErrors(
   }
 );
 
-export const acceptRequset = catchAsyncErrors(
+export const acceptRequest = catchAsyncErrors(
   async (req: IRequest, res: Response, next: NextFunction) => {
     const { email: senderEmail } = req.body;
 
@@ -100,7 +100,7 @@ export const acceptRequset = catchAsyncErrors(
     const sender = await User.findOne({ email: senderEmail });
 
     if (!sender) {
-      // await ContactRequset.findOneAndDelete({})
+      // await ContactRequest.findOneAndDelete({})
       return next(new ErrorHandler("Sender of this request not found", 404));
     }
 
@@ -110,7 +110,7 @@ export const acceptRequset = catchAsyncErrors(
       );
     }
 
-    const request = await ContactRequset.findOne({
+    const request = await ContactRequest.findOne({
       senderId: sender._id,
       receiverId: req.user._id,
     });
@@ -129,7 +129,7 @@ export const acceptRequset = catchAsyncErrors(
     await receiver?.save();
     await sender?.save();
 
-    await ContactRequset.findByIdAndDelete(request._id);
+    await ContactRequest.findByIdAndDelete(request._id);
 
     // TODO: notify sockets
 
@@ -151,7 +151,7 @@ export const declineRequest = catchAsyncErrors(
       );
     }
 
-    const request = await ContactRequset.findOne({
+    const request = await ContactRequest.findOne({
       senderId: id,
       receiverId: req.user._id,
     });
@@ -160,7 +160,7 @@ export const declineRequest = catchAsyncErrors(
       return next(new ErrorHandler(`No request found from User: ${id}`, 404));
     }
 
-    await ContactRequset.findByIdAndDelete(request._id);
+    await ContactRequest.findByIdAndDelete(request._id);
 
     // TODO: notify sockets
 
@@ -176,7 +176,7 @@ export const cancelRequest = catchAsyncErrors(
       return next(new ErrorHandler("request id is required", 400));
     }
 
-    const request = await ContactRequset.findById(requestId);
+    const request = await ContactRequest.findById(requestId);
 
     if (!request) {
       return next(
@@ -184,7 +184,7 @@ export const cancelRequest = catchAsyncErrors(
       );
     }
 
-    await ContactRequset.findByIdAndDelete(request._id);
+    await ContactRequest.findByIdAndDelete(request._id);
 
     res.status(200).json({ success: true });
   }

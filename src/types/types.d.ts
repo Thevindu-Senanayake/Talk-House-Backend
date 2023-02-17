@@ -18,7 +18,7 @@ export interface UserModel extends mongoose.Document {
   getJwt: () => string;
 }
 
-export interface ContactRequset extends mongoose.Document {
+export interface ContactRequest extends mongoose.Document {
   senderId: mongoose.Schema.Types.ObjectId;
   receiverId: mongoose.Schema.Types.ObjectId;
   createdAt: Date;
@@ -29,7 +29,7 @@ export interface Message extends mongoose.Document {
     id: mongoose.Schema.Types.ObjectId;
     username: string;
   };
-  reciever: mongoose.Schema.Types.ObjectId[];
+  receiver: mongoose.Schema.Types.ObjectId[];
   text: string;
   createdAt: Date;
   updatedAt?: Date;

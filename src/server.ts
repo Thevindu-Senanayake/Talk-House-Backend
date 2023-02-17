@@ -1,9 +1,8 @@
-import express, { Errback } from "express";
+import express from "express";
 import http from "http";
-import cors from "cors";
 import * as dotenv from "dotenv";
 
-import connectDatabase from "./config/datatbase";
+import connectDatabase from "./config/database";
 import app from "./app";
 import { createSocketServer } from "./socket/socket";
 
