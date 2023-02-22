@@ -30,7 +30,7 @@ export const register = catchAsyncErrors(
         res.cookie("registrationCompleted", true);
         res.cookie("email", email);
 
-        res.redirect("/api/v2/auth/resendOTP");
+        return next(new ErrorHandler("You Already Filled the Register Form. Verify Your Account!", 400))
       }
 
       // generate otp
