@@ -30,14 +30,23 @@ export const register = catchAsyncErrors(
         res.cookie("registrationCompleted", true);
         res.cookie("email", email);
 
-        return next(new ErrorHandler("You Already Filled the Register Form. Verify Your Account!", 400))
+        return next(
+          new ErrorHandler(
+            "You Already Filled the Register Form. Verify Your Account!",
+            400
+          )
+        );
       }
 
       // generate otp
       const otp = await generateOTP();
 
       // send confirmation email
-      await sendConfirmationEmail(email, otp);
+      const isEmailSent = await sendConfirmationEmail(email, otp);
+
+      if (!isEmailSent) {
+        return next(new ErrorHandler("Can't Send Confirmation Email", 500));
+      }
 
       await OTP.create({ code: otp, email: email });
       await User.create({
@@ -110,7 +119,11 @@ export const resendOTP = catchAsyncErrors(
     const otp = await generateOTP();
 
     // send confirmation email
-    await sendConfirmationEmail(email, otp);
+    const isEmailSent = await sendConfirmationEmail(email, otp);
+
+    if (!isEmailSent) {
+      return next(new ErrorHandler("Can't Send Confirmation Email", 500));
+    }
 
     // check if otp is already present and if delete the current otp record
     await OTP.findOneAndDelete({ email: email });
