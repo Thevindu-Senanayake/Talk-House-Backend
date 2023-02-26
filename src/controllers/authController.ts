@@ -154,10 +154,7 @@ export const login = catchAsyncErrors(
 
     if (!user.verified) {
       return next(
-        new ErrorHandler(
-          "Verification Your Account Using OTP And try again",
-          401
-        )
+        new ErrorHandler("Verify Your Account Using OTP And try again", 401)
       );
     }
 
